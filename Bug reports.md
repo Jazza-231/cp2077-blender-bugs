@@ -10,7 +10,7 @@ Sector `interior_-20_-16_0_1`: Contains the bulk of the interior; Around 50% of 
 Sector `interior_-39_-31_0_0`: Contains primarily metal containers, speakers, and bathroom fixtures; The North East section of the bar
 Sector `interior_-39_-32_0_0`: Contains primarily gameplay objects such as the Arcades or Pool Cues, as well as many bottles and the same metal containers
 Sector `interior_-40_-31_0_0`: Contains primarily newspaper sheets, upstairs seating, and lighting fixtures; The North entrance of the bar
-Sector `interior_-40_-32_0_0`: "Sector E"
+Sector `interior_-40_-32_0_0`: Contains the bar area including bottles and seating, as well as railing and much decoration and lighting of the south end of the bar
 
 ### General Instructions
 
@@ -82,3 +82,55 @@ Some decals, for some reason, use a "white.001" texture plugged into the alpha m
 <img src="Decal_Plane.056-blender.png" width="600"/>
 <br />
 <img src="Decal_Plane.056-game.png" width="600"/>
+
+### 5. Candle flames are imported as area lights facing in random cardinal directions
+
+- Example Sector: `interior_-39_-32_0_0`
+- Example Objects:
+  - `352_light_002`
+  - `345_light_005`
+  - `354_light_005`
+
+These candle lights are imported as area lights, most facing -X, some facing +Z, all with colours `#FFDEAD` (close to `4200K`) with a strength ranging from `0.03` to `0.2`. I would expect these to be imported as point lights.
+
+<img src="354_light_005-blender.png" width="600"/>
+
+### 6. Some neon lights have no emission set
+
+- Example Sector: `interior_-40_-32_0_0`
+- Example Objects:
+  - `submesh_01_LOD_1.2284`
+
+These are either neon lights or fluorescent lights, they have a material and are named `emissive_orange_mid` or simply `Yellow`, but they do not have an emission colour or strength (in fact they are the default Principled BSDF material).
+
+<img src="submesh_01_LOD_1.2284-blender.png" width="600"/>
+<br />
+<img src="submesh_01_LOD_1.2284-game.png" width="600"/>
+
+### 7. Bump map on bottles is far too strong
+
+- Example Sector: `interior_-40_-32_0_0`
+- Example Objects:
+  - `submesh_01_LOD_1.1893`
+  - `submesh_01_LOD_1.1894`
+  - `submesh_01_LOD_1.2116`
+
+The bump map on bottles is set to `1`, which I believe is too strong and does not visually match the game's look. This one is more subjective than the others, so please see the images. I believe `0.1` or lower even is more correct.
+
+<img src="submesh_01_LOD_1.1893-blender.png" width="600"/>
+<br />
+<img src="submesh_01_LOD_1.1893-game.png" width="600"/>
+
+### 8. Newly fixed mesh is blurry
+
+- Example Sector: `interior_-20_-16_0_1`
+- Example Objects:
+  - `submesh_02_LOD_1_doubled.044`
+  - `submesh_02_LOD_1_doubled.042`
+  - `submesh_02_LOD_1_doubled.030`
+
+The mesh is blurry from the `DetailColour` (in .030's case, `fence_02_d`), when in-game the mesh has a hard edge cutoff. I think the game uses a blurred texture on purpose so they can control the thickness of the mesh. I believe this can be fixed by using a `Greater Than` node with a high threshold like `0.85` to match the relatively thin mesh in the game, put in between the `DetailColour` texture and the `Alpha` socket.
+
+<img src="submesh_02_LOD_1_doubled.044-blender.png" width="600"/>
+<br />
+<img src="submesh_02_LOD_1_doubled.044-game.png" width="600"/>
